@@ -1,0 +1,2 @@
+43244736;Pablo Enrique;Hearne;2001-05-25 00:00:00;Nico Martinelli;[10, 5, 8, 9, 4];1;0;
+44136268;Anna Valentina;Galán Jiménez;2002-04-13 00:00:00;Daniel Aparicio;[10, 10, 9, 8];5;0;
