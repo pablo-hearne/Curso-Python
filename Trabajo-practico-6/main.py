@@ -38,10 +38,11 @@ def ordenar(alumnos,apellidos):
                 ya_en_lista.append(alumnos[j][0])
                 break
         
-    return alumnos_ordenados
+    return alumnos_ordenados,apellidos
             
 def actualizar(alumnos):
     base_de_datos = open(r"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\base_de_datos.txt","w")
+    apellidos = []
     for alumno in alumnos:
         for dato in alumno:
             base_de_datos.write(f"{dato};")
@@ -49,7 +50,7 @@ def actualizar(alumnos):
         apellidos.append(alumno[2])
     
     base_de_datos.close()
-    return apellidos
+    return apellidos,alumnos
 
 #b) Mostrar los datos de cada alumno
 def listado_alumnos(alumnos):
@@ -95,6 +96,10 @@ def agregar():
         for dato in Alumno:
             base_de_datos.write(f"{dato};")
         base_de_datos.write("\n")
+    Alumno[3] = str(Alumno[3])
+    global alumnos,apellidos
+    alumnos.append(Alumno)
+    apellidos.append(Alumno[2])
     return 
 
 
@@ -110,12 +115,12 @@ def expulsar(alumnos,apellidos,expulsado=0,falsa_expulsion=False):
             print(f"{alumno[1]} {alumno[2]} fue expulsado de la institución.")
             alumnos.remove(alumno)
             apellidos.remove(alumno[2])
-            alumnos = actualizar(alumnos)
+            apellidos = actualizar(alumnos)
         elif alumno[0] == expulsado and falsa_expulsion:
             alumnos.remove(alumno)
             print("Ingrese los datos modificados del alumno")
             apellidos.remove(alumno[2])
-            alumnos = actualizar(alumnos)
+            apellidos = actualizar(alumnos)
     if aux == len(alumnos):
         print("No se encontró al alumno")
     return alumnos,apellidos
@@ -127,17 +132,45 @@ def expulsar(alumnos,apellidos,expulsado=0,falsa_expulsion=False):
 
 #                               Ejecución
 
-with open(r"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\base_de_datos.txt","r") as base_de_datos:
+with open(rf"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\base_de_datos.txt","r") as base_de_datos:
+    backup = open(fr"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\backups\{datetime.datetime.now()}","x")
     alumnos = base_de_datos.readlines()
     apellidos = []
     for i in range (len(alumnos)):
+        backup.write(alumnos[i])
         alumnos[i] = alumnos[i].split(";")
         alumnos[i].pop()
         apellidos.append(alumnos[i][2])
-    alumnos = ordenar(alumnos,apellidos)
+    alumnos,apellidos = ordenar(alumnos,apellidos)
+    backup.close()
 
 
 
 while True:
-    print()
+    print("                         Seleccione una opción:")
+    print("     1) Listado de Alumnos")
+    print("     2) Agregar Alumno")
+    print("     3) Expulsar Alumno")
+    print("     4) Modificar Alumno")
+    print("Ingrese ''*'' para salir")
+    opcion = input()
+    if opcion=="*":
+        break
+    elif opcion=="1":
+        listado_alumnos(alumnos)
+    elif opcion=="2":
+        agregar()
+        alumnos,apellidos = ordenar(alumnos,apellidos)
+    elif opcion=="3":
+        alumnos,apellidos = expulsar(alumnos,apellidos)
+        actualizar(alumnos)
+    elif opcion=="4":
+        modificar(alumnos,apellidos)
+    elif 1<int(opcion) or int(opcion)>4:
+        print("Elija una opción válida")
+    
 
+
+with open(fr"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\backups\{datetime.datetime.now()}","x") as backup:
+    for alumno in alumnos:
+        backups
