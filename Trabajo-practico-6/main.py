@@ -20,15 +20,12 @@ El trabajo practico se deberá subir a un repositorio de GitHub Publico, y se en
 # registro de todas las notas, cantidad de
 # faltas, cantidad de amonestaciones recibidas.)
 
-import datetime
-# a) Llevar un registro de todos los datos de alumnos de la escuela (Nombre, Apellido,
-# fecha de nacimiento, DNI, Nombre de Tutor, registro de todas las notas, cantidad de
+# a) Llevar un registro de todos los datos de alumnos de la escuela (DNI, Nombre, Apellido,
+# fecha de nacimiento, Nombre de Tutor, registro de todas las notas, cantidad de
 # faltas, cantidad de amonestaciones recibidas.)
 
-def listado_alumnos(alumnos):
-    for alumno in alumnos:
-        print (f"{alumno[2]}, {alumno[1]} DNI:{alumno[0]}")
-    return
+import datetime
+
 
 def ordenar(alumnos,apellidos):
     apellidos.sort()
@@ -49,9 +46,30 @@ def actualizar(alumnos):
         for dato in alumno:
             base_de_datos.write(f"{dato};")
         base_de_datos.write("\n")
+        apellidos.append(alumno[2])
     
     base_de_datos.close()
+    return apellidos
+
+#b) Mostrar los datos de cada alumno
+def listado_alumnos(alumnos):
+    for alumno in alumnos:
+        fecha = datetime.datetime.strptime(alumno[3],"%Y-%m-%d %H:%S:%f")
+        print (f"--{alumno[2]}, {alumno[1]} DNI:{alumno[0]} Nacimiento:{fecha.day}/{fecha.month}/{fecha.year}")
+        print (f"   Tutor: {alumno[4]} Notas:{alumno[5]}")
+        print (f"   Faltas: {alumno[6]} Amonestaciones: {alumno[7]}")
     return
+
+#c) Modificar los datos de los alumnos
+def modificar(alumnos,apellidos):
+    print("Qué alumno desea modificar?")
+    listado_alumnos(alumnos)
+    a_modificar = input("DNI: ")
+    alumnos,apellidos = expulsar(alumnos,apellidos,a_modificar,True)
+    agregar()
+    return
+
+
 
 # d) Agregar alumnos
 def agregar():
@@ -73,26 +91,34 @@ def agregar():
     faltas = int(input("Cuántas faltas tiene el alumno?\n"))
     amonestaciones = int(input("Cuántas amonestaciones tiene?\n"))
     Alumno = [DNI,Nombre,Apellido,fecha_de_nacimiento,nombre_tutor,notas,faltas,amonestaciones]
-    with open(r"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\base_de_datos.txt","r") as base_de_datos:
+    with open(r"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\base_de_datos.txt","a") as base_de_datos:
         for dato in Alumno:
             base_de_datos.write(f"{dato};")
+        base_de_datos.write("\n")
     return 
 
 
 #e) Expulsar alumnos
-def expulsar(alumnos):
-    print("Qué alumno desea expulsar?")
-    listado_alumnos(alumnos)
+def expulsar(alumnos,apellidos,expulsado=0,falsa_expulsion=False):
     aux = len(alumnos)
-    expulsado = input("Ingrese DNI:\n")
+    if not falsa_expulsion:
+        print("Qué alumno desea expulsar?")
+        listado_alumnos(alumnos)
+        expulsado = input("Ingrese DNI:\n")
     for alumno in alumnos:
-        if alumno[0] == expulsado:
+        if alumno[0] == expulsado and not falsa_expulsion:
             print(f"{alumno[1]} {alumno[2]} fue expulsado de la institución.")
             alumnos.remove(alumno)
-            actualizar(alumnos)
-    if aux == len(alumno):
+            apellidos.remove(alumno[2])
+            alumnos = actualizar(alumnos)
+        elif alumno[0] == expulsado and falsa_expulsion:
+            alumnos.remove(alumno)
+            print("Ingrese los datos modificados del alumno")
+            apellidos.remove(alumno[2])
+            alumnos = actualizar(alumnos)
+    if aux == len(alumnos):
         print("No se encontró al alumno")
-    return
+    return alumnos,apellidos
 
     
 
@@ -105,13 +131,13 @@ with open(r"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\base_de_datos.txt","r
     alumnos = base_de_datos.readlines()
     apellidos = []
     for i in range (len(alumnos)):
-        alumnos[i] = alumnos[i].split("\n")
+        alumnos[i] = alumnos[i].split(";")
         alumnos[i].pop()
-        print(alumnos[i])
         apellidos.append(alumnos[i][2])
     alumnos = ordenar(alumnos,apellidos)
-    
 
 
 
+while True:
+    print()
 
