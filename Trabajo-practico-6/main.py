@@ -131,9 +131,9 @@ def expulsar(alumnos,apellidos,expulsado=0,falsa_expulsion=False):
 
 
 #                               Ejecución
-
+ahora = datetime.datetime.now()
+backup = open(fr"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\backups\{datetime.datetime.date(ahora)}-{ahora.hour}:{ahora.minute}","w")
 with open(rf"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\base_de_datos.txt","r") as base_de_datos:
-    backup = open(fr"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\backups\{datetime.datetime.now()}","x")
     alumnos = base_de_datos.readlines()
     apellidos = []
     for i in range (len(alumnos)):
@@ -142,7 +142,8 @@ with open(rf"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\base_de_datos.txt","
         alumnos[i].pop()
         apellidos.append(alumnos[i][2])
     alumnos,apellidos = ordenar(alumnos,apellidos)
-    backup.close()
+    
+backup.close()
 
 
 
@@ -170,7 +171,9 @@ while True:
         print("Elija una opción válida")
     
 
-
-with open(fr"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\backups\{datetime.datetime.now()}","x") as backup:
+ahora = datetime.datetime.now()
+with open(fr"D:\Cosas\Pablo\Curso Python\Trabajo-practico-6\backups\{datetime.datetime.date(ahora)}-{ahora.hour}:{ahora.minute}","w") as backup:
     for alumno in alumnos:
-        backups
+        for dato in alumno:
+            backup.write(f"{dato};")
+        backup.write("\n")
